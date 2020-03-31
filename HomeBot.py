@@ -12,16 +12,33 @@ serverSocket.bind((IP, PORT))
 SERVER_TOKEN = "SV1"
 
 REG_USER = []
+#Functions Incomming
+def addClient(msg):
+    REG_USER.append(msg.sender)
 
+def remClient(msg):
+    REG_USER.remove(msg.sender)
+
+#Send Functions
 def pcSchutdown():
-    pass
+    target = "all"
+    msgs = msgBuilder(target, "shutdown", "doIt")
+    if(msgs[0] == 0):
+        for msg in msgs:
+            sendMsg(msg)
+    elif(msgs[0] == -1):
+        print("Error Kann nicht Fortgesetzt werden")
 
 def msgBuilder(target, command, key):
     if(target == "all"):
         msg_list = []
-        for targ in REG_USER:
-            msg_list.append(internMSG(SERVER_TOKEN, targ, command, key))
-        return(0, msg_list)
+        if(len(REG_USER) > 0):
+            for targ in REG_USER:
+                msg_list.append(internMSG(SERVER_TOKEN, targ, command, key))
+            return(0, msg_list)
+        else:
+            print("Keine Registrirte Nutzer")
+            return(-1,-1)
     else:
         msg = internMSG(SERVER_TOKEN, target, command, key)
         return(1, msg)

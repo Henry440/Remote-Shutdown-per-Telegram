@@ -21,12 +21,11 @@ def shutdown():
 #Send Commands to Server
 def regAddServer():
     msg = internMSG(MY_TOKEN, serverKey, "registration", "hereAmI")
-
-def alive():
-    msg = internMSG(MY_TOKEN, serverKey, "alive", "hereWeGoAgain")
+    sendMsg(msg)
 
 def goOffline():
     msg = internMSG(MY_TOKEN, serverKey, "offline", "bye")
+    sendMsg(msg)
 
 
 #Handel In and out Messages
