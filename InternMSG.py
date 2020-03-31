@@ -18,3 +18,15 @@ class internMSG:
             return True
         else:
             return False
+
+    def toString(self):
+        ret = ""
+        ret = ret + str(self.sender) + "#!#"
+        ret = ret + str(self.reciver) + "#!#"
+        ret = ret + str(self.command) + "#!#"
+        ret = ret + str(self.key)
+        return ret
+
+    def StringToMsg(self, msg):
+        datas = msg.split("#!#")
+        return datas

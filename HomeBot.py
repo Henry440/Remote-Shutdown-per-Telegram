@@ -51,11 +51,18 @@ def recvMesg():
     print("Server is Running")
     while True:
         (client_socket, addr) = serverSocket.accept()
-        print(addr + " is Connecting")
+        print(addr)
         USER_IP.append(addr)
-        msg = client_socket.recv(2048)
+        data = client_socket.recv(2048)
+        data = str(data, "utf8")
+        conv = internMSG.StringToMsg(data)
+        msg = internMSG(conv[0], conv[1], conv[2], conv[3])
+        msgHandler(msg)
 
 def sendMsg(msg):
+    pass
+
+def msgHandler(msg):
     pass
 
 #Telegram Bot

@@ -34,7 +34,7 @@ def recvMesg():
     pass
 
 def sendMsg(msg):
-    client_socket.send(bytes(msg, "utf8"))
+    client_socket.send(bytes(msg.toString(), "utf8"))
 
 def handleCommand(msg):
     if(msg.forMe(MY_TOKEN) or True):
