@@ -2,9 +2,10 @@ from configs import *
 from InternMSG import  internMSG
 import socket
 import os
+from threading import Thread
 
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#client_socket.connect((IP, PORT))
+client_socket.connect((IP, PORT))
 
 serverKey = "firstKontakt"
 MY_TOKEN = "PC-1"
@@ -33,7 +34,7 @@ def recvMesg():
     pass
 
 def sendMsg(msg):
-    pass
+    client_socket.send(bytes(msg, "utf8"))
 
 def handleCommand(msg):
     if(msg.forMe(MY_TOKEN) or True):
@@ -52,3 +53,6 @@ def handleCommand(msg):
     else:
         print(f"Nachicht nicht für diesen PC / Nachicht für {msg.reciver}")
 
+regAddServer()
+t = Thread(target=recvMesg)
+t.start()

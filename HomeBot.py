@@ -4,6 +4,7 @@ from Message import Message
 import socket
 from configs import *
 from InternMSG import  internMSG
+from threading import Thread
 
 bot = telebot.TeleBot(TOKEN)
 
@@ -12,6 +13,8 @@ serverSocket.bind((IP, PORT))
 SERVER_TOKEN = "SV1"
 
 REG_USER = []
+USER_IP = []
+
 #Functions Incomming
 def addClient(msg):
     REG_USER.append(msg.sender)
@@ -45,7 +48,12 @@ def msgBuilder(target, command, key):
 
 #Handel In and out Messages
 def recvMesg():
-    pass
+    print("Server is Running")
+    while True:
+        (client_socket, addr) = serverSocket.accept()
+        print(addr + " is Connecting")
+        USER_IP.append(addr)
+        msg = client_socket.recv(2048)
 
 def sendMsg(msg):
     pass
@@ -79,4 +87,11 @@ def echo_all(message):
     bot.send_message(data.chatID, f"Deine ChatID ist {data.chatID} \nDeine Nachicht war : {data.text}")
     print(message.json)
 
-bot.polling()
+try:
+    serverSocket.listen(5)
+    t = Thread(target=recvMesg)
+    t.start()
+    print("Telegram Bot is Running")
+    bot.polling()
+except KeyboardInterrupt:
+    print("Beende")
