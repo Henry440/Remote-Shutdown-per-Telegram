@@ -27,6 +27,6 @@ class internMSG:
         ret = ret + str(self.key)
         return ret
 
-    def StringToMsg(self, msg):
+def StringToMsg(msg):
         datas = msg.split("#!#")
         return datas

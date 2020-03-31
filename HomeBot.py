@@ -3,8 +3,10 @@ import json
 from Message import Message
 import socket
 from configs import *
-from InternMSG import  internMSG
+from InternMSG import  *
 from threading import Thread
+
+import time
 
 bot = telebot.TeleBot(TOKEN)
 
@@ -14,25 +16,42 @@ SERVER_TOKEN = "SV1"
 
 REG_USER = []
 USER_IP = []
+USER_LIST = []
+
+knownCommands = (("registration", True, "hereAmI"), ("offline", True, "bye"))
 
 #Functions Incomming
 def addClient(msg):
     REG_USER.append(msg.sender)
+    genUserList()
 
 def remClient(msg):
     REG_USER.remove(msg.sender)
+    print(str(msg.sender) + " wurde Entfernt")
+    genUserList()
+
+#Gen Userdatas
+def genUserList():
+    USER_LIST = []
+    if(len(USER_IP) == len(REG_USER)):
+        for i in range(len(USER_IP)):
+            USER_LIST.append((REG_USER[i], USER_IP[i]))
 
 #Send Functions
 def pcSchutdown():
     target = "all"
-    msgs = msgBuilder(target, "shutdown", "doIt")
-    if(msgs[0] == 0):
+    data = msgBuilder(target, "shutdown", "doIt")
+    
+    msgs = data[1]
+
+    if(data[0] == 0):
         for msg in msgs:
             sendMsg(msg)
     elif(msgs[0] == -1):
         print("Error Kann nicht Fortgesetzt werden")
 
 def msgBuilder(target, command, key):
+    genUserList()
     if(target == "all"):
         msg_list = []
         if(len(REG_USER) > 0):
@@ -52,18 +71,45 @@ def recvMesg():
     while True:
         (client_socket, addr) = serverSocket.accept()
         print(addr)
-        USER_IP.append(addr)
+        inIP = False
+        for ip in USER_IP:
+            if(ip == client_socket):
+                inIP = True
+        if(inIP == False):
+            USER_IP.append(client_socket)
         data = client_socket.recv(2048)
         data = str(data, "utf8")
-        conv = internMSG.StringToMsg(data)
+        client_socket.close()
+        print(data)
+        conv = StringToMsg(data)
         msg = internMSG(conv[0], conv[1], conv[2], conv[3])
         msgHandler(msg)
 
 def sendMsg(msg):
-    pass
+    to = str(msg.reciver)
+    for empf in USER_LIST:
+        if(empf[0] == to):
+            empf[1].send(bytes(msg.toString(), "utf8"))
 
 def msgHandler(msg):
-    pass
+    if(msg.forMe(SERVER_TOKEN)):
+        for command in knownCommands:
+            if(command[0] == msg.command):
+                if(command[1]):
+                    if(msg.key == command[2]):
+                        commandList(msg)
+                    else:
+                        print("Unautorisierter Key")
+                else:
+                    command(msg)
+    else:
+        print(f"Nachicht nicht für diesen PC / Nachicht für {msg.reciver}")
+
+def commandList(msg):
+    if(msg.command == "registration"):
+        addClient(msg)
+    elif(msg.command == "offline"):
+        remClient(msg)
 
 #Telegram Bot
 @bot.message_handler(commands=['start'])
