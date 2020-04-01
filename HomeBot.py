@@ -18,24 +18,39 @@ REG_USER = []
 USER_IP = []
 USER_LIST = []
 
-knownCommands = (("registration", True, "hereAmI"), ("offline", True, "bye"))
+knownCommands = (("registration", True, "hereAmI"), ("offline", True, "bye"), ("online", False, ""))
 
 #Functions Incomming
 def addClient(msg):
     REG_USER.append(msg.sender)
-    genUserList()
 
 def remClient(msg):
-    REG_USER.remove(msg.sender)
-    print(str(msg.sender) + " wurde Entfernt")
-    genUserList()
+    for i in range(len(REG_USER)):
+        if(REG_USER[i] == msg.sender):
+            USER_LIST.remove(())
+            print(str(msg.sender) + " wurde Entfernt")
 
 #Gen Userdatas
 def genUserList():
-    USER_LIST = []
     if(len(USER_IP) == len(REG_USER)):
         for i in range(len(USER_IP)):
             USER_LIST.append((REG_USER[i], USER_IP[i]))
+
+#SystemBridge Commands
+def online(message):
+    data = Message(message)
+    target = "all"
+    data = msgBuilder(target, "online", str(data.chatID))
+    msgs = data[1]
+    if(data[0] == 0):
+        for msg in msgs:
+            sendMsg(msg)
+    elif(msgs[0] == -1):
+        print("Error Kann nicht Fortgesetzt werden")
+
+def onlineBack(msg):
+    bot.send_message(msg.key, f"{msg.sender} ist Online")
+
 
 #Send Functions
 def pcSchutdown():
@@ -66,7 +81,25 @@ def msgBuilder(target, command, key):
         return(1, msg)
 
 #Handel In and out Messages
+
+def waitOfClient():
+    while True:
+        if(len(USER_IP) > 0):
+            for client in USER_IP:
+                data = client.recv(2048)
+                if(len(data) <= 0):
+                    continue
+                data = str(data, "utf8")
+                print(data)
+                conv = StringToMsg(data)
+                msg = internMSG(conv[0], conv[1], conv[2], conv[3])
+                msgHandler(msg)
+        else:
+            time.sleep(10)
+
+
 def recvMesg():
+    serverSocket.listen()
     print("Server is Running")
     while True:
         (client_socket, addr) = serverSocket.accept()
@@ -79,7 +112,6 @@ def recvMesg():
             USER_IP.append(client_socket)
         data = client_socket.recv(2048)
         data = str(data, "utf8")
-        client_socket.close()
         print(data)
         conv = StringToMsg(data)
         msg = internMSG(conv[0], conv[1], conv[2], conv[3])
@@ -89,6 +121,7 @@ def sendMsg(msg):
     to = str(msg.reciver)
     for empf in USER_LIST:
         if(empf[0] == to):
+            print(f"Sende Nachicht zu {to}")
             empf[1].send(bytes(msg.toString(), "utf8"))
 
 def msgHandler(msg):
@@ -101,7 +134,7 @@ def msgHandler(msg):
                     else:
                         print("Unautorisierter Key")
                 else:
-                    command(msg)
+                    commandList(msg)
     else:
         print(f"Nachicht nicht für diesen PC / Nachicht für {msg.reciver}")
 
@@ -110,6 +143,8 @@ def commandList(msg):
         addClient(msg)
     elif(msg.command == "offline"):
         remClient(msg)
+    elif(msg.command == "online"):
+        onlineBack(msg)
 
 #Telegram Bot
 @bot.message_handler(commands=['start'])
@@ -118,7 +153,13 @@ def send_welcome(message):
 
 @bot.message_handler(commands=['help'])
 def send_help(message):
-    bot.reply_to(message, "/start --> Starte den Telegrambot\nfire --> PC Shutdown")
+    bot.reply_to(message, "/start --> Starte den Telegrambot\n/fire --> PC Shutdown")
+
+@bot.message_handler(commands=['online'])
+def send_help(message):
+    bot.reply_to(message, "Execute Online Command")
+    online(message)
+
 
 @bot.message_handler(commands=['fire'])
 def alarmFeuer(message):
@@ -126,6 +167,7 @@ def alarmFeuer(message):
     send = False
     for user in AUTH_USER:
         if(data.chatID == user):
+            print("Befehl Shutdown Recived")
             pcSchutdown()
             bot.reply_to(message, "PC Shutdown wird ausgeführt")
             send = True
@@ -141,9 +183,11 @@ def echo_all(message):
     print(message.json)
 
 try:
-    serverSocket.listen(5)
+    
     t = Thread(target=recvMesg)
     t.start()
+    cl = Thread(target=waitOfClient)
+    cl.start()
     print("Telegram Bot is Running")
     bot.polling()
 except KeyboardInterrupt:
