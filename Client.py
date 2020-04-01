@@ -8,7 +8,7 @@ client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client_socket.connect((IP, PORT))
 
 serverKey = "SV1"
-MY_TOKEN = "LaptopWIN"
+MY_TOKEN = "Tower"
 
 knownCommands = (("shutdown", True, "doIt"), ("test", True, "test"), ("online", False, ""))
 #Commands on System

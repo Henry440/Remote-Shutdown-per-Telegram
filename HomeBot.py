@@ -32,9 +32,12 @@ def remClient(msg):
 
 #Gen Userdatas
 def genUserList():
+    USER_LIST.clear()
     if(len(USER_IP) == len(REG_USER)):
         for i in range(len(USER_IP)):
             USER_LIST.append((REG_USER[i], USER_IP[i]))
+    for user in USER_LIST:
+        print(user)
 
 #SystemBridge Commands
 def online(message):
@@ -45,7 +48,7 @@ def online(message):
     if(data[0] == 0):
         for msg in msgs:
             sendMsg(msg)
-    elif(msgs[0] == -1):
+    elif(data[0] == -1):
         print("Error Kann nicht Fortgesetzt werden")
 
 def onlineBack(msg):
@@ -72,6 +75,8 @@ def msgBuilder(target, command, key):
         if(len(REG_USER) > 0):
             for targ in REG_USER:
                 msg_list.append(internMSG(SERVER_TOKEN, targ, command, key))
+                for msg in msg_list:
+                    print(msg.key)
             return(0, msg_list)
         else:
             print("Keine Registrirte Nutzer")
