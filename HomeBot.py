@@ -16,7 +16,7 @@ SERVER_TOKEN = "SV1"
 
 REG_USER = []
 USER_IP = []
-USER_LIST = []
+USER_LIST = [] #(REG_USER, USER_IP)
 
 knownCommands = (("registration", True, "hereAmI"), ("offline", True, "bye"), ("online", False, ""))
 
@@ -27,7 +27,7 @@ def addClient(msg):
 def remClient(msg):
     for i in range(len(REG_USER)):
         if(REG_USER[i] == msg.sender):
-            USER_LIST.remove(())
+            USER_LIST.remove((REG_USER[i], USER_IP[i]))
             print(str(msg.sender) + " wurde Entfernt")
 
 #Gen Userdatas

@@ -3,6 +3,7 @@ from InternMSG import  *
 import socket
 import os
 from threading import Thread
+import platform
 
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client_socket.connect((IP, PORT))
@@ -19,7 +20,10 @@ def shutdown():
     print("Shutdown")
     goOffline()
     print("Abgemeldet")
-    os.system("shutdown -s -t 240 -f -c \"EINSATZ zum Abbrechen shutdown -a in CMD\"")
+    if(platform.version == "Windows"):
+        os.system("shutdown -s -t 240 -f -c \"EINSATZ zum Abbrechen shutdown -a in CMD\"")
+    else:
+        print("Current Only Windows is Supported, Linux will be follow")
 
 def onlineRegeust(msg):
     msg = internMSG(MY_TOKEN, serverKey, "online", str(msg.key))
