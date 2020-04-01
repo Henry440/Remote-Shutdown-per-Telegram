@@ -29,6 +29,7 @@ def remClient(msg):
         if(REG_USER[i] == msg.sender):
             USER_LIST.remove((REG_USER[i], USER_IP[i]))
             print(str(msg.sender) + " wurde Entfernt")
+    genUserList()
 
 #Gen Userdatas
 def genUserList():
@@ -36,8 +37,6 @@ def genUserList():
     if(len(USER_IP) == len(REG_USER)):
         for i in range(len(USER_IP)):
             USER_LIST.append((REG_USER[i], USER_IP[i]))
-    for user in USER_LIST:
-        print(user)
 
 #SystemBridge Commands
 def online(message):

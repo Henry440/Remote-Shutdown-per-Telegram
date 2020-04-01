@@ -20,7 +20,7 @@ def shutdown():
     print("Shutdown")
     goOffline()
     print("Abgemeldet")
-    if(platform.version == "Windows"):
+    if(platform.system() == "Windows"):
         os.system("shutdown -s -t 240 -f -c \"EINSATZ zum Abbrechen shutdown -a in CMD\"")
     else:
         print("Current Only Windows is Supported, Linux will be follow")
