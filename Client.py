@@ -22,8 +22,10 @@ def shutdown():
     print("Abgemeldet")
     if(platform.system() == "Windows"):
         os.system("shutdown -s -t 240 -f -c \"EINSATZ zum Abbrechen shutdown -a in CMD\"")
+    elif(platform.system() == "Linux"):
+        os.system("shutdown -h 2 \"EINSATZ zum Abbrechen shutdown -c in CMD\"")
     else:
-        print("Current Only Windows is Supported, Linux will be follow")
+        print("Dein Geraetetyp wird noch nicht Unterstüzt")
 
 def onlineRegeust(msg):
     msg = internMSG(MY_TOKEN, serverKey, "online", str(msg.key))
