@@ -28,6 +28,8 @@ def remClient(msg):
     for i in range(len(REG_USER)):
         if(REG_USER[i] == msg.sender):
             USER_LIST.remove((REG_USER[i], USER_IP[i]))
+            USER_IP.remove(USER_IP[i])
+            REG_USER.remove(REG_USER[i])
             print(str(msg.sender) + " wurde Entfernt")
     genUserList()
 
@@ -90,14 +92,23 @@ def waitOfClient():
     while True:
         if(len(USER_IP) > 0):
             for client in USER_IP:
-                data = client.recv(2048)
-                if(len(data) <= 0):
-                    continue
-                data = str(data, "utf8")
-                print(data)
-                conv = StringToMsg(data)
-                msg = internMSG(conv[0], conv[1], conv[2], conv[3])
-                msgHandler(msg)
+                try:
+                    data = client.recv(2048)
+                    if(len(data) <= 0):
+                        continue
+                    data = str(data, "utf8")
+                    print(data)
+                    conv = StringToMsg(data)
+                    msg = internMSG(conv[0], conv[1], conv[2], conv[3])
+                    msgHandler(msg)
+                except ConnectionResetError as e:
+                    for i in range(len(USER_IP)):
+                        if(client == USER_IP[i]):
+                            USER_LIST.remove((REG_USER[i], USER_IP[i]))
+                            USER_IP.remove(USER_IP[i])
+                            REG_USER.remove(REG_USER[i])
+                            print(str(msg.sender) + " wurde Entfernt da Offline")
+                    genUserList()
         else:
             time.sleep(10)
 
