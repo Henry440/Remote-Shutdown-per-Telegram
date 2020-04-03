@@ -23,7 +23,8 @@ def shutdown():
     if(platform.system() == "Windows"):
         os.system("shutdown -s -t 240 -f -c \"EINSATZ zum Abbrechen shutdown -a in CMD\"")
     elif(platform.system() == "Linux"):
-        os.system("shutdown -h 2 \"EINSATZ zum Abbrechen shutdown -c in CMD\"")
+        os.system("notify-send \"Einsatz\" \"Der PC wird in 2 Minuten Heruntergefahren \nshutdown -c um dies zu verhindern\" ")
+        os.system("shutdown -h 2 ")
     else:
         print("Dein Geraetetyp wird noch nicht Unterstüzt")
 
