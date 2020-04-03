@@ -19,6 +19,7 @@ def test():
 def shutdown():
     print("Shutdown")
     goOffline()
+    client_socket.close()
     print("Abgemeldet")
     if(platform.system() == "Windows"):
         os.system("shutdown -s -t 240 -f -c \"EINSATZ zum Abbrechen shutdown -a in CMD\"")
