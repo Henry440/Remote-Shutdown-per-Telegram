@@ -9,7 +9,7 @@ client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client_socket.connect((IP, PORT))
 
 serverKey = "SV1"
-MY_TOKEN = "Tower"
+MY_TOKEN = CLIENT_TOKEN
 
 knownCommands = (("shutdown", True, "doIt"), ("test", True, "test"), ("online", False, ""))
 #Commands on System
@@ -42,6 +42,7 @@ def regAddServer():
 def goOffline():
     msg = internMSG(MY_TOKEN, serverKey, "offline", "bye")
     sendMsg(msg)
+    exit()
 
 
 #Handel In and out Messages
