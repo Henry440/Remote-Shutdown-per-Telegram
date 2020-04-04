@@ -22,7 +22,15 @@ knownCommands = (("registration", True, "hereAmI"), ("offline", True, "bye"), ("
 
 #Functions Incomming
 def addClient(msg):
-    REG_USER.append(msg.sender)
+    exist = False
+    for user in REG_USER:
+        if(user == msg.sender):
+            exist = True
+    if(exist == False):
+        REG_USER.append(msg.sender)
+    else:
+        REG_USER.append(msg.sender + "temp")
+        regError(msg.sender + "temp")
 
 def remClient(msg):
     for i in range(len(REG_USER)):
@@ -40,6 +48,19 @@ def genUserList():
             USER_LIST.append((REG_USER[i], USER_IP[i]))
 
 #SystemBridge Commands
+
+def regError(tempName):
+    target = tempName
+    data = msgBuilder(target, "regError", "")
+    msg = data[1]
+    if(data[0] == 1):
+        sendMsg(msg)
+    for i in range(len(REG_USER)):
+        if(REG_USER[i] == tempName):
+            REG_USER.remove(REG_USER[i])
+            USER_LIST.remove(USER_LIST[i])
+            genUserList()
+
 def online(message):
     data = Message(message)
     target = "all"
@@ -135,7 +156,11 @@ def sendMsg(msg):
     for empf in USER_LIST:
         if(empf[0] == to):
             print(f"Sende Nachicht zu {to}")
-            empf[1].send(bytes(msg.toString(), "utf8"))
+            try:
+                empf[1].send(bytes(msg.toString(), "utf8"))
+            except BrokenPipeError:
+                print(f"Client : {to} nicht verfügbar")
+                
 
 def msgHandler(msg):
     if(msg.forMe(SERVER_TOKEN)):
