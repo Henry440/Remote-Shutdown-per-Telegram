@@ -30,7 +30,15 @@ def addClient(msg):
         REG_USER.append(msg.sender)
     else:
         REG_USER.append(msg.sender + "temp")
-        regError(msg.sender + "temp")
+        regError(msg.sender + "temp", msg.sender)
+        for i in range(len(REG_USER)):
+            if(REG_USER[i] == msg.sender + "temp"):
+                REG_USER.remove(REG_USER[i])
+                USER_IP.remove(USER_IP[i])
+                genUserList()
+                break
+        for x in REG_USER:
+            print(x)
 
 def remClient(msg):
     for i in range(len(REG_USER)):
@@ -49,17 +57,12 @@ def genUserList():
 
 #SystemBridge Commands
 
-def regError(tempName):
+def regError(tempName, tar):
     target = tempName
     data = msgBuilder(target, "regError", "")
     msg = data[1]
     if(data[0] == 1):
         sendMsg(msg)
-    for i in range(len(REG_USER)):
-        if(REG_USER[i] == tempName):
-            REG_USER.remove(REG_USER[i])
-            USER_LIST.remove(USER_LIST[i])
-            genUserList()
 
 def online(message):
     data = Message(message)
