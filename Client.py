@@ -87,7 +87,10 @@ def handleCommand(msg):
         else:
             print("Nachicht ist nicht von Server gesendet wurden")
     else:
-        print(f"Nachicht nicht für diesen PC / Nachicht für {msg.reciver}")
+        if(msg.reciver == MY_TOKEN + "temp"):
+            print(f"Dein Username {MY_TOKEN} Existiert Bereits")
+        else:
+            print(f"Nachicht nicht für diesen PC / Nachicht für {msg.reciver}")
 
 regAddServer()
 t = Thread(target=recvMesg)
