@@ -18,9 +18,6 @@ def test():
 
 def shutdown():
     print("Shutdown")
-    goOffline()
-    client_socket.close()
-    print("Abgemeldet")
     if(platform.system() == "Windows"):
         os.system("shutdown -s -t 240 -f -c \"EINSATZ zum Abbrechen shutdown -a in CMD\"")
     elif(platform.system() == "Linux"):
@@ -28,6 +25,8 @@ def shutdown():
         os.system("shutdown -h 2 ")
     else:
         print("Dein Geraetetyp wird noch nicht Unterstüzt")
+    goOffline()
+    print("Abgemeldet")
 
 def onlineRegeust(msg):
     msg = internMSG(MY_TOKEN, serverKey, "online", str(msg.key))

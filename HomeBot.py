@@ -89,7 +89,7 @@ def pcSchutdown():
     if(data[0] == 0):
         for msg in msgs:
             sendMsg(msg)
-    elif(msgs[0] == -1):
+    elif(data[0] == -1):
         print("Error Kann nicht Fortgesetzt werden")
 
 def msgBuilder(target, command, key):
