@@ -126,10 +126,13 @@ def waitOfClient():
                     msgHandler(msg)
                 except ConnectionResetError as e:
                     for i in range(len(USER_IP)):
-                        if(client == USER_IP[i]):
-                            print(f"{REG_USER[i]} wurde Entfernt da Offline")
-                            USER_IP.remove(USER_IP[i])
-                            REG_USER.remove(REG_USER[i])
+                        try:
+                            if(client == USER_IP[i]):
+                                print(f"{REG_USER[i]} wurde Entfernt da Offline")
+                                USER_IP.remove(USER_IP[i])
+                                REG_USER.remove(REG_USER[i])
+                        except IndexError as e2:
+                            print(f"Client {client} ist nicht mehr Vorhanden")
                     genUserList()
         else:
             time.sleep(5)
